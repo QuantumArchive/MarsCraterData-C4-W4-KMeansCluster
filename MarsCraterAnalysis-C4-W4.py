@@ -145,13 +145,13 @@ merged_train_all_sub = merged_train_all[['DIAM_CIRCLE_IMAGE','cluster']].dropna(
 latitudemodel = smf.ols(formula='DIAM_CIRCLE_IMAGE ~ C(cluster)',data=merged_train_all_sub).fit()
 print(latitudemodel.summary())
 
-print('means for Crater Diameter by cluster')
+print('means and standard deviations for Crater Diameter by cluster')
 m1 = merged_train_all_sub.groupby('cluster').mean()
-print(m1)
-
-print('standard deviations for Crater Diameter by cluster')
 m2 = merged_train_all_sub.groupby('cluster').std()
-print(m2)
+m1.columns=['DIAM_CIRCLE_IMAGE_MEAN']
+m2.columns=['DIAM_CIRCLE_IMAGE_STDEV']
+m3 = pd.merge(m1,m2,left_index=True,right_index=True)
+print(m3)
 
 mc1 = multi.MultiComparison(merged_train_all_sub['DIAM_CIRCLE_IMAGE'],merged_train_all_sub['cluster'])
 res1 = mc1.tukeyhsd()
